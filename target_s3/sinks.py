@@ -13,7 +13,12 @@ from target_s3.formats.format_jsonl import FormatJsonl
 
 
 LOGGER = logging.getLogger("target-s3")
-FORMAT_TYPE = {"parquet": FormatParquet, "csv": FormatCsv, "json": FormatJson, "jsonl": FormatJsonl}
+FORMAT_TYPE = {
+    "parquet": FormatParquet,
+    "csv": FormatCsv,
+    "json": FormatJson,
+    "jsonl": FormatJsonl,
+}
 
 
 class s3Sink(BatchSink):
