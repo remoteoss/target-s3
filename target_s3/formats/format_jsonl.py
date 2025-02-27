@@ -1,6 +1,5 @@
-from simplejson import dumps
-
-from target_s3.formats.format_base import FormatBase, default_json_serializer
+from target_s3.formats.format_base import FormatBase
+from target_s3.formats.format_json import dumps
 
 
 class FormatJsonl(FormatBase):
@@ -13,19 +12,7 @@ class FormatJsonl(FormatBase):
         return super()._prepare_records()
 
     def _write(self) -> None:
-        return super()._write(
-            "\n".join(
-                map(
-                    lambda x: dumps(
-                        x,
-                        default=default_json_serializer,
-                        use_decimal=True,
-                        ignore_nan=True,
-                    ),
-                    self.records,
-                )
-            )
-        )
+        return super()._write("\n".join(map(dumps, self.records)))
 
     def run(self) -> None:
         # use default behavior, no additional run steps needed

@@ -1,9 +1,8 @@
 import logging
 from abc import ABCMeta, abstractmethod
-from datetime import date, datetime
+from datetime import datetime
 
 from boto3 import Session
-from bson import ObjectId
 from smart_open import open
 
 LOGGER = logging.getLogger("target-s3")
@@ -184,12 +183,3 @@ class FormatBase(metaclass=ABCMeta):
             return record
 
         return list(map(lambda x: process_date(x), records))
-
-
-def default_json_serializer(obj: any) -> any:
-    if isinstance(obj, ObjectId):
-        return str(obj)
-    if isinstance(obj, (datetime, date)):
-        return obj.isoformat()
-    else:
-        raise TypeError(f"Type {type(obj)} not serializable")
