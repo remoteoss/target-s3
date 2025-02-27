@@ -1,18 +1,6 @@
-from datetime import datetime
-
-from bson import ObjectId
 from simplejson import dumps
 
-from target_s3.formats.format_base import FormatBase
-
-
-def default(obj: any) -> any:
-    if isinstance(obj, ObjectId):
-        return str(obj)
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    else:
-        raise TypeError(f"Type {type(obj)} not serializable")
+from target_s3.formats.format_base import FormatBase, default_json_serializer
 
 
 class FormatJson(FormatBase):
@@ -27,7 +15,12 @@ class FormatJson(FormatBase):
 
     def _write(self) -> None:
         return super()._write(
-            dumps(self.records, default=default, use_decimal=True, ignore_nan=True)
+            dumps(
+                self.records,
+                default=default_json_serializer,
+                use_decimal=True,
+                ignore_nan=True,
+            )
         )
 
     def run(self) -> None:
