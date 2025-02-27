@@ -1,18 +1,24 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from bson import ObjectId
-from simplejson import dumps
+from simplejson import dumps as _dumps
 
 from target_s3.formats.format_base import FormatBase
 
 
-def default(obj: any) -> any:
+def default_json_serializer(obj: any) -> any:
     if isinstance(obj, ObjectId):
         return str(obj)
-    if isinstance(obj, datetime):
+    if isinstance(obj, (datetime, date)):
         return obj.isoformat()
     else:
         raise TypeError(f"Type {type(obj)} not serializable")
+
+
+def dumps(obj: any) -> str:
+    return _dumps(
+        obj, default=default_json_serializer, use_decimal=True, ignore_nan=True
+    )
 
 
 class FormatJson(FormatBase):
@@ -26,9 +32,7 @@ class FormatJson(FormatBase):
         return super()._prepare_records()
 
     def _write(self) -> None:
-        return super()._write(
-            dumps(self.records, default=default, use_decimal=True, ignore_nan=True)
-        )
+        return super()._write(dumps(self.records))
 
     def run(self) -> None:
         # use default behavior, no additional run steps needed

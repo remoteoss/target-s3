@@ -1,19 +1,5 @@
-from datetime import datetime
-
-from bson import ObjectId
-from simplejson import JSONEncoder, dumps
-
 from target_s3.formats.format_base import FormatBase
-
-
-class JsonSerialize(JSONEncoder):
-    def default(self, obj: any) -> any:
-        if isinstance(obj, ObjectId):
-            return str(obj)
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        else:
-            raise TypeError(f"Type {type(obj)} not serializable")
+from target_s3.formats.format_json import dumps
 
 
 class FormatJsonl(FormatBase):

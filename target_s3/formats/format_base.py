@@ -1,14 +1,9 @@
-import re
-import inflection
-import json
-import collections
 import logging
-from datetime import datetime
 from abc import ABCMeta, abstractmethod
+from datetime import datetime
 
 from boto3 import Session
 from smart_open import open
-
 
 LOGGER = logging.getLogger("target-s3")
 DATE_GRAIN = {
@@ -39,9 +34,9 @@ class FormatBase(metaclass=ABCMeta):
         assert self.format, "FormatBase.__init__: Expecting format in configuration."
 
         self.cloud_provider = config.get("cloud_provider", None)
-        assert (
-            self.cloud_provider
-        ), "FormatBase.__init__: Expecting cloud provider in configuration"
+        assert self.cloud_provider, (
+            "FormatBase.__init__: Expecting cloud provider in configuration"
+        )
 
         self.context = context
         self.extension = extension
@@ -131,37 +126,37 @@ class FormatBase(metaclass=ABCMeta):
     ) -> str:
         ret = ""
         ret += (
-            f"{'year=' if partition_name_enabled        else  ''}{batch_start.year}/"
+            f"{'year=' if partition_name_enabled else ''}{batch_start.year}/"
             if grain <= DATE_GRAIN["year"]
             else ""
         )
         ret += (
-            f"{'month=' if partition_name_enabled       else  ''}{batch_start.month:02}/"
+            f"{'month=' if partition_name_enabled else ''}{batch_start.month:02}/"
             if grain <= DATE_GRAIN["month"]
             else ""
         )
         ret += (
-            f"{'day=' if partition_name_enabled         else  ''}{batch_start.day:02}/"
+            f"{'day=' if partition_name_enabled else ''}{batch_start.day:02}/"
             if grain <= DATE_GRAIN["day"]
             else ""
         )
         ret += (
-            f"{'hour=' if partition_name_enabled        else  ''}{batch_start.hour:02}/"
+            f"{'hour=' if partition_name_enabled else ''}{batch_start.hour:02}/"
             if grain <= DATE_GRAIN["hour"]
             else ""
         )
         ret += (
-            f"{'minute=' if partition_name_enabled      else  ''}{batch_start.minute:02}/"
+            f"{'minute=' if partition_name_enabled else ''}{batch_start.minute:02}/"
             if grain <= DATE_GRAIN["minute"]
             else ""
         )
         ret += (
-            f"{'second=' if partition_name_enabled      else  ''}{batch_start.second:02}/"
+            f"{'second=' if partition_name_enabled else ''}{batch_start.second:02}/"
             if grain <= DATE_GRAIN["second"]
             else ""
         )
         ret += (
-            f"{'microsecond=' if partition_name_enabled else  ''}{batch_start.microsecond}/"
+            f"{'microsecond=' if partition_name_enabled else ''}{batch_start.microsecond}/"
             if grain <= DATE_GRAIN["microsecond"]
             else ""
         )
